@@ -101,19 +101,8 @@ impl Headers {
     /// Returns all the values of a `Set-Cookie` header within a `Headers` object with a given name.
     /// Returns an error if the name is not `Set-Cookie`.
     pub fn get_all(&self, name: &str) -> Result<Vec<String>> {
-        if name.to_lowercase() != "set-cookie" {
-            return Err(Error::RustError("getAll() can only be used with the header name 'Set-Cookie'.".into()));
-        }
-
-        let mut result = Vec::new();
-        let entries = self.entries();
-        for (key, value) in entries {
-            if key.to_lowercase() == "set-cookie" {
-                result.push(value);
-            }
-        }
-
-        Ok(result)
+        let js_array = self.0.get_all(name).map_err(Error::from)?;
+        Ok(js_array.iter().map(|v| v.as_string().unwrap()).collect())
     }
 }
 
