@@ -97,6 +97,13 @@ impl Headers {
             // The values iterator.next() will always return a proper value containing a string
             .map(|a| a.unwrap().as_string().unwrap())
     }
+
+    /// Returns all the values of a `Set-Cookie` header within a `Headers` object with a given name.
+    /// Returns an error if the name is not `Set-Cookie`.
+    pub fn get_all(&self, name: &str) -> Result<Vec<String>> {
+        let js_array = self.0.get_all(name).map_err(Error::from)?;
+        Ok(js_array.iter().map(|v| v.as_string().unwrap()).collect())
+    }
 }
 
 impl Default for Headers {
